@@ -1,5 +1,7 @@
 venv/
-*.pyc
-
+venv
 .env
-.gitignore
+
+.vscode
+
+__pycache__/
