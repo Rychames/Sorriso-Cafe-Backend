@@ -24,62 +24,6 @@ class CustomUser(AbstractUser):
         self.username = self.email   
         super().save(*args, **kwargs)
 
-       
-'''
-class Company(models.Model):
-    #logo = models.ImageField(upload_to='profile_images/', blank=True, null=True)
-    name = models.CharField(max_length=255)
-    cnpj = models.CharField(max_length=40)
-    address = models.CharField(max_length=300)
-    #tema (Cor)(Opcional) se não tiver coloca cor padrão
-
-
-class Product(models.Model):
-    CATEGORYS_CHOICES = [
-        ('Eletrônicos', 'Eletrônicos'),
-        ('Móveis', 'Móveis'),
-        ('Alimentos', 'Alimentos'),
-        ('Vertuário', 'Vertuário'),
-        ('Outros', 'Outros'),
-    ]
-    SIZE_CHOICES = [
-        ('S', 'S'),
-        ('M', 'M'),
-        ('G', 'G'),
-    ]
-    
-    name = models.CharField(max_length=255)
-    category = models.CharField(choices=CATEGORYS_CHOICES, max_length=30)
-    model = models.CharField(max_length=255)
-    company_brand = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    quantity = models.PositiveSmallIntegerField()
-    size = models.CharField(choices=SIZE_CHOICES, max_length=30)
-    lot = models.BooleanField(default=False)
-    
-    delivered_by = models.CharField(max_length=255)
-    received_by = models.CharField(max_length=255)
-    date_receipt = models.DateTimeField()
-    
-    company = models.ForeignKey('Company')
-    
-    
-@EntradaDeProdutos
-produto = @Produto
-
-Quem entregou
-Data e hora de recebimento
-assinatura do responsável (Arquivo.pdf)
-
-@SaídaDeProdutos
-produto = @Produto
-
-Quem retirou
-Data e hora de saída
-Destino do material
-assinatura (Arquivo.pdf)
-
-    '''
      
 class EmailVerificationCode(models.Model):
     email = models.EmailField(unique=True)
