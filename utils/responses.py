@@ -32,6 +32,8 @@ def ResponseData(
         success = False
         response_data['error'] = error 
 
+   
+
     response = {
         'success': success,
         'status': status,
@@ -100,10 +102,10 @@ def ApiResponse(response):
     status = response.status_code    
     success = successStatus(status)
     if success:
-        print("data", response.data)
+        print(response.data)
         if response.data is None:
             response.data = {}
-        return Response(status=status, data=response.data)
+        return Response(status=status, data=response.data, success=success)
     else:
-        return Response(status=status, error=response.data)
+        return Response(status=status, error=response.data, success=success)
         

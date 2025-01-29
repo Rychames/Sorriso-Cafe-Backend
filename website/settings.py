@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'user',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -86,12 +87,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ),
+    ),    
     'EXCEPTION_HANDLER': 'utils.exceptions.custom_exception_handler',
 
     'COERCE_DECIMAL_TO_STRING': False,
     'COMPACT_JSON': True,
-
+    
 }
 
 

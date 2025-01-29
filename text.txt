@@ -1,2 +1,60 @@
 uzkk zgbx oorr kykd
 bgdc onki rtuj yycz
+
+class Company(models.Model):
+    #logo = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    name = models.CharField(max_length=255)
+    cnpj = models.CharField(max_length=40)
+    address = models.CharField(max_length=300)
+    #tema (Cor)(Opcional) se não tiver coloca cor padrão
+
+
+class Product(models.Model):
+    CATEGORYS_CHOICES = [
+        ('Eletrônicos', 'Eletrônicos'),
+        ('Móveis', 'Móveis'),
+        ('Alimentos', 'Alimentos'),
+        ('Vertuário', 'Vertuário'),
+        ('Outros', 'Outros'),
+    ]
+    SIZE_CHOICES = [
+        ('S', 'S'),
+        ('M', 'M'),
+        ('G', 'G'),
+    ]
+    
+    name = models.CharField(max_length=255)
+    category = models.CharField(choices=CATEGORYS_CHOICES, max_length=30)
+    model = models.CharField(max_length=255)
+    company_brand = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    quantity = models.PositiveSmallIntegerField()
+    size = models.CharField(choices=SIZE_CHOICES, max_length=30)
+    lot = models.BooleanField(default=False)
+    sector = models.CharField(max_length=255)
+    images = Lista[@ProductsImages]
+
+    delivered_by = models.CharField(max_length=255)
+    delivery_man_signature = (Arquivo.pdf)
+
+    received_by = models.CharField(max_length=255) -  Automaticamente ser o usuário Logado?
+    conta de quem tá realizando o registro - automaticamente setado via backend
+    received_company = @Company
+    date_receipt = models.DateTimeField()
+    
+    current_company = models.ForeignKey('Company')
+    
+    
+@Registro de Transferência
+Conta de quem tá realizando o registro
+Quem vai entregar
+De qual empresa o produto vai sair
+Para qual empresa vai
+
+produtos = Lista[@Produto]
+
+Status de recebimento
+Quem recebeu - Pode ser o Nome ou a conta que alterou o recebimento para True
+assinatura (Arquivo.pdf)
+Data e hora de recebimento - Só vai ser alterado quando a empresa recebedora mudar o status de recebimento
+
