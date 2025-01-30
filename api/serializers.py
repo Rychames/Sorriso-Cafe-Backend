@@ -7,12 +7,11 @@ from user.serializers import UserSerializer
 
 
 class CompanySerializer(serializers.ModelSerializer):
+        
     class Meta:
         model = Company
         fields = '__all__'
-        extra_kwargs = {
-            'logo': {'required': False, 'allow_null': True}
-        }
+ 
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
