@@ -25,12 +25,22 @@ class ProductSerializer(serializers.ModelSerializer):
 
     images = ProductImageSerializer(many=True, required=False)
     received_by = UserSerializer(read_only=True)
-    received_company = CompanySerializer()
-    current_company = CompanySerializer()
+    received_company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
+    current_company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
 
     class Meta:
         model = Product
         fields = '__all__'
+        extra_kwargs = {
+            'delivery_man_signature': {'required': False, 'allow_null': True}
+        }
+    
+    def to_representation(self, instance):
+        # Serialização: converte IDs para objetos nested
+        representation = super().to_representation(instance)
+        representation['received_company'] = CompanySerializer(instance.received_company).data
+        representation['current_company'] = CompanySerializer(instance.current_company).data
+        return representation
 
     def create(self, validated_data):
         images_data = self.context.get('request').FILES.getlist('images') 

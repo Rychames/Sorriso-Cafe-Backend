@@ -125,10 +125,11 @@ class ProductTests(AuthenticatedAPITestBase):
     def test_list_products(self):
         self.test_create_product()
         response = self.client.get('/api/products/')
-        print(response.content.decode())
+        #print(response.content.decode())
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['success'])
-        
+
+
     def test_list_products_not_authenticated(self):
         self.test_create_product()
         self.clean_credentials()
