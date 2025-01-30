@@ -5,7 +5,7 @@ from django.db import models
 from user.models import CustomUser
 
 class Company(models.Model):
-    logo = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    logo = models.ImageField(upload_to='company/', blank=True, null=True)
     name = models.CharField(max_length=255)
     cnpj = models.CharField(max_length=40)
     address = models.CharField(max_length=300)

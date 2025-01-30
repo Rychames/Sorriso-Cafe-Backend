@@ -5,8 +5,9 @@ from api.models import Company, Product, ProductImage
 from .test_api_views_base import AuthenticatedAPITestBase
 from website.settings import BASE_DIR
 
-class CompanyTests(APITestCase):
+class CompanyTests(AuthenticatedAPITestBase):
     def setUp(self):
+        super().setUp()
         self.company_data = {
             'logo': None,
             'name': 'Empresa Teste',
@@ -40,6 +41,8 @@ class CompanyTests(APITestCase):
         print(response.content.decode())
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Company.objects.count(), 2)
+        print(Company.objects.last().logo)
+        self.assertIsNotNone(Company.objects.last().logo)
 
     def test_retrieve_company(self):
         detail_url = reverse('api:company-detail', args=[self.test_company.id])
@@ -52,10 +55,10 @@ class CompanyTests(APITestCase):
         detail_url = reverse('api:company-detail', args=[self.test_company.id])
         updated_data = {
             'name': 'Empresa Atualizada',
-            'cnpj': '00.000.000/0001-00',
+            'cnpj': '11.000.000/0001-00',
             'address': 'Nova Rua, 456'
         }
-        response = self.client.put(detail_url, updated_data, format='json')
+        response = self.client.patch(detail_url, updated_data, format='json')
         self.assertEqual(response.status_code, 200)
         self.test_company.refresh_from_db()
         self.assertEqual(self.test_company.name, 'Empresa Atualizada')
@@ -110,6 +113,7 @@ class ProductTests(AuthenticatedAPITestBase):
             obj.image.delete()
         for obj in Product.objects.all():
             obj.delete()
+        
 
     def test_create_product(self):
         #print(self.product_data)

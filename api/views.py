@@ -1,22 +1,23 @@
-# api/views.py
-
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import viewsets
+from rest_framework import permissions
 from api.models import Product, Company, ProductImage
 from api.serializers import ProductImageSerializer, ProductSerializer, CompanySerializer
 from utils.model_viewset import ModelViewSet
+from utils.permissions import IsAuthenticated
 
 class CompanyViewSet(ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        else:
+            return [permissions.IsAuthenticated()]
     
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
 class ProductViewSet(ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -24,6 +25,6 @@ class ProductViewSet(ModelViewSet):
         serializer.save(received_by=self.request.user)
         
 class ProductImageViewSet(ModelViewSet):
-    #permission_classes = [AllowAny]
+    #permission_classes = [IsAuthenticated]
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
