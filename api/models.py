@@ -3,17 +3,33 @@
 from django.db import models
 
 from user.models import CustomUser
+from utils.image_size_validators import compress_image
 
 class Company(models.Model):
     logo = models.ImageField(upload_to='company/', blank=True, null=True)
     name = models.CharField(max_length=255)
     cnpj = models.CharField(max_length=40)
     address = models.CharField(max_length=300)
-      
-    #tema (Cor)(Opcional) se não tiver coloca cor padrão
     
+    industry = models.CharField(max_length=255, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True) 
+    updated_at = models.DateTimeField(auto_now=True) 
+
     def __str__(self):
         return self.name
+
+    @property
+    def products_count(self):
+        """
+        Retorna o número de produtos associados a esta empresa.
+        """
+        return self.current_products.count()  
+
+    def save(self, *args, **kwargs):
+        if self.logo:  # Comprime apenas se houver imagem
+            self.logo = compress_image(self.logo)
+        super().save(*args, **kwargs)
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -22,6 +38,11 @@ class ProductImage(models.Model):
         related_name='images'  # ← Adicione related_name para acesso reverso
     )
     image = models.ImageField(upload_to='products/')
+    
+    def save(self, *args, **kwargs):
+        if self.image:  # Comprime apenas se houver imagem
+            self.image = compress_image(self.image)
+        super().save(*args, **kwargs)
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -48,6 +69,7 @@ class Product(models.Model):
     lot = models.BooleanField(default=False)
     sector = models.CharField(max_length=255)
     
+    last_transporter_name =  models.CharField(max_length=255, blank=True, null=True)
     delivered_by = models.CharField(max_length=255)
     delivery_man_signature = models.FileField(upload_to='signatures/', blank=True, null=True)
     
@@ -67,3 +89,5 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+   

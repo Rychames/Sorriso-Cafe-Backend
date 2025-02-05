@@ -5,24 +5,18 @@ from user.models import CustomUser, EmailVerificationCode
 class UserSerializer(serializers.ModelSerializer):
     is_active = serializers.SerializerMethodField(read_only=True)
     
-    #profile_image = serializers.ImageField(required=False, allow_null=True)
-    
     class Meta:
         model = CustomUser
         fields = [
             'id',
+            'profile_image',
             'email',
             'first_name',
             'last_name',
-            #'cpf',
-            #'date_birth',
-            #'phone_number',
             'is_active',
-            #'step',
         ]
         extra_kwargs = {
             'email': {'read_only': True},
-            #'step': {'read_only': True},
         }
     
     def get_is_admin(self, obj):
@@ -68,7 +62,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'confirm_password']
+        fields = ['profile_image', 'email', 'password', 'confirm_password']
 
     def validate(self, data):
 
