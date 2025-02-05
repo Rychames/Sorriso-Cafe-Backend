@@ -24,11 +24,8 @@ class CustomUser(AbstractUser):
     
     def save(self, *args, **kwargs):
         self.username = self.email   
-        super().save(*args, **kwargs)
-    
-    def save(self, *args, **kwargs):
-        if self.image:  # Comprime apenas se houver imagem
-            self.image = compress_image(self.image)
+        if self.profile_image: 
+            self.profile_image = compress_image(self.image)
         super().save(*args, **kwargs)
 
      
