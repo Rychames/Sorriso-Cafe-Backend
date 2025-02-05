@@ -104,7 +104,7 @@ def ApiResponse(response):
     if success:
         print(response.data)
         if response.data is None:
-            response.data = {}
+            response.data = [None]
         return Response(status=status, data=response.data, success=success)
     else:
         return Response(status=status, error=response.data, success=success)
