@@ -7,7 +7,8 @@ from user.serializers import UserSerializer
 
 
 class CompanySerializer(serializers.ModelSerializer):
-        
+    products_count = serializers.IntegerField(read_only=True)  
+
     class Meta:
         model = Company
         fields = '__all__'
@@ -19,9 +20,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
         exclude = ['product']
 
 class ProductSerializer(serializers.ModelSerializer):
-    #images = ProductImageSerializer(many=True, required=False)
-    #received_by = serializers.PrimaryKeyRelatedField(read_only=True)
-
     images = ProductImageSerializer(many=True, required=False)
     received_by = UserSerializer(read_only=True)
     received_company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
@@ -35,7 +33,6 @@ class ProductSerializer(serializers.ModelSerializer):
         }
     
     def to_representation(self, instance):
-        # Serialização: converte IDs para objetos nested
         representation = super().to_representation(instance)
         representation['received_company'] = CompanySerializer(instance.received_company).data
         representation['current_company'] = CompanySerializer(instance.current_company).data
