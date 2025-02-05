@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase, APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
 from api.models import Company, Product, ProductImage
@@ -111,6 +112,7 @@ class ProductTests(AuthenticatedAPITestBase):
         self.company.logo.delete()
         for obj in ProductImage.objects.all():
             obj.image.delete()
+            obj.delete()
         for obj in Product.objects.all():
             obj.delete()
         
@@ -175,4 +177,100 @@ class ProductTests(AuthenticatedAPITestBase):
         self.assertEqual(response.data['data']['images'][0]['id'], 1)
         self.assertEqual(response.data['data']['images'][1]['id'], 2)
         
-     
+    def create_test_products(self):
+        """Cria produtos de teste com diferentes características"""
+        company2 = Company.objects.create(
+            name="Armazém Central",
+            cnpj="11.111.111/0001-11",
+            address="Av. Principal, 1000"
+        )
+
+        products = [
+            {
+                'name': 'Teclado Mecânico',
+                'category': 'Eletrônicos',
+                'quantity': 15,
+                'size': 'M',
+                'received_company': self.company,
+                'current_company': company2,
+                'company_brand': 'Redragon'
+            },
+            {
+                'name': 'Cadeira Gamer',
+                'category': 'Móveis',
+                'quantity': 5,
+                'size': 'G',
+                'received_company': company2,
+                'current_company': self.company,
+                'company_brand': 'DXRacer'
+            },
+            {
+                'name': 'Mouse Pad Grande',
+                'category': 'Acessórios',
+                'quantity': 30,
+                'size': 'G',
+                'received_company': self.company,
+                'current_company': self.company,
+                'company_brand': 'Logitech'
+            }
+        ]
+
+        for prod in products:
+            product = Product.objects.create(**prod)
+            # Adiciona imagens para testar o relacionamento
+            ProductImage.objects.create(product=product, image=self.get_image())
+
+        return company2
+
+    # Testes de filtros
+    def test_filter_by_name_icontains(self):
+        self.create_test_products()
+        response = self.client.get('/api/products/?name__icontains=Mecânico')
+        self.assertEqual(response.status_code, 200)
+        print(response.content.decode())
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'Teclado Mecânico')
+
+    def test_filter_by_category_exact(self):
+        self.create_test_products()
+        response = self.client.get('/api/products/?category=Móveis')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'Cadeira Gamer')
+
+    def test_filter_by_quantity_range(self):
+        self.create_test_products()
+        response = self.client.get('/api/products/?quantity__gte=10&quantity__lte=20')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'Teclado Mecânico')
+
+    def test_filter_by_received_company_name(self):
+        company2 = self.create_test_products()
+        response = self.client.get(f'/api/products/?received_company__name={self.company.name}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['data']), 2)
+
+    def test_filter_by_current_company_cnpj(self):
+        company2 = self.create_test_products()
+        response = self.client.get(f'/api/products/?current_company__cnpj={company2.cnpj}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['data']), 1)
+
+    def test_custom_search_filter(self):
+        self.create_test_products()
+        # Deve encontrar em name, description, model ou company_brand
+        response = self.client.get('/api/products/?search=Logitech')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'Mouse Pad Grande')
+
+    def test_filter_combinations(self):
+        self.create_test_products()
+        response = self.client.get(
+            '/api/products/?category=Eletrônicos&size=M&quantity__gte=10'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'Teclado Mecânico')
+
