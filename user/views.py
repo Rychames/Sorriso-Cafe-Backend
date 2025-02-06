@@ -48,6 +48,11 @@ class UserRegisterViewSet(viewsets.ViewSet):
             user = CustomUser.objects.get(email=email)
             if user.is_active:
                 return Response(error=["Email já está sendo utilizado por outro usuário."], message="Email em uso. Faça login.", status=400)
+            if request.data.get('profile_image', None) is not None and user.profile_image is not None:
+                user.profile_image.delete()
+                user.profile_image = None
+                user.save()
+                print("User está sem imagem")
             serializer = RegisterUserSerializer(data=request.data, instance=user)           
         except:
             serializer = RegisterUserSerializer(data=request.data)

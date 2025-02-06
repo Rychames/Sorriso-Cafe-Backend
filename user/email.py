@@ -25,7 +25,7 @@ def create_verification_code(email):
     return code    
      
 def send_verification_email(email, code):
-    subject = "Gestão de Estoque - Código de Verificação"
+    subject = f"PP Scanner - Código de Verificação"
     message = f"Seu código de verificação é {code.code}.\nEste código expirará em 10 minutos."
     if SEND_EMAIL:
         send_mail(subject, message, 'almoxarifadogrupopp@gmail.com', [email])
