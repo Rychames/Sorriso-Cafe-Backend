@@ -2,7 +2,7 @@ from io import BytesIO
 from PIL import Image
 from django.core.files import File
 
-def compress_image(image, max_size_kb=300, quality=85):
+def compress_image(image, max_size_kb=300, quality=75):
     """
     Comprime a imagem para não ultrapassar `max_size_kb` (em kilobytes).
     Reduz a qualidade e/ou redimensiona a imagem se necessário.

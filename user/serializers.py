@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'role',
             'is_active',
         ]
         extra_kwargs = {
@@ -45,6 +46,28 @@ class UserSerializer(serializers.ModelSerializer):
             else:
                 setattr(instance, attr, value)
         return instance
+
+class UserManagerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id',
+            'profile_image',
+            'email',
+            'first_name',
+            'last_name',
+            'role',
+            'is_active',
+        ]
+        extra_kwargs = {
+            'profile_image': {'read_only': True},
+            'email': {'read_only': True},
+            'first_name': {'read_only': True},
+            'last_name': {'read_only': True},
+        }
+
+
 
 class SendCodeSerializer(serializers.ModelSerializer):
     class Meta:
