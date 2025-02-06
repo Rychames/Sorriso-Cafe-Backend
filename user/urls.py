@@ -7,6 +7,8 @@ router = DefaultRouter()
 
 router.register(r'register', views.UserRegisterViewSet, basename='register')
 router.register(r'login', views.UserLoginViewSet, basename='login')
+router.register(r'manager', views.UserManagerViewSet, basename='manager')
+
 
 app_name = "user"  
 
