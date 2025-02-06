@@ -66,7 +66,7 @@ class Product(models.Model):
     description = models.TextField()
     quantity = models.PositiveSmallIntegerField()
     size = models.CharField(choices=SIZE_CHOICES, max_length=1, blank=True, null=True)
-    price = models.DecimalField(max_digits=12, decimal_places=2)
+    price = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     lot = models.BooleanField(default=False)
     sector = models.CharField(max_length=255)
     
