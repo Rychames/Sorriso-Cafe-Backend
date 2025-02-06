@@ -27,8 +27,8 @@ class Company(models.Model):
         return self.current_products.count()  
 
     def save(self, *args, **kwargs):
-        if self.logo:  # Comprime apenas se houver imagem
-            self.logo = compress_image(self.logo)
+        #if self.logo:  # Comprime apenas se houver imagem
+        #    self.logo = compress_image(self.logo)
         super().save(*args, **kwargs)
 
 class ProductImage(models.Model):
@@ -40,8 +40,8 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to='products/')
     
     def save(self, *args, **kwargs):
-        if self.image:  # Comprime apenas se houver imagem
-            self.image = compress_image(self.image)
+        #if self.image:  # Comprime apenas se houver imagem
+        #    self.image = compress_image(self.image)
         super().save(*args, **kwargs)
 
 class Product(models.Model):
