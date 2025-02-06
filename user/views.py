@@ -232,7 +232,7 @@ class UserLoginViewSet(viewsets.ViewSet):
             )          
 
 class UserManagerViewSet(ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated, IsNotCommon]
     serializer_class = UserManagerSerializer
     queryset = CustomUser.objects.all()
     http_method_names = ['get', 'put', 'patch', 'delete']  
