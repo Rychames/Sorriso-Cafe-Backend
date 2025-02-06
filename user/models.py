@@ -10,10 +10,14 @@ from utils.image_size_validators import compress_image
 from .manager import CustomUserManager
 
 class CustomUser(AbstractUser):    
+    class UserRoles(models.TextChoices):
+        ADMIN = 'ADMIN', 'ADMIN'
+        MODERATOR = 'MODERATOR', 'MODERATOR'
+        COMMON = 'COMMON', 'COMMON'
+
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     email = models.EmailField(unique=True) 
-    #full_name = models.CharField(max_length=255)
-    #companies = models.ManyToManyField('Company', blank=True)
+    role = models.CharField(max_length=30, choices=UserRoles.choices, default=UserRoles.COMMON) 
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []              
@@ -25,8 +29,20 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         self.username = self.email   
         if self.profile_image: 
-            self.profile_image = compress_image(self.image)
+            self.profile_image = compress_image(self.profile_image)
+            
+        self.update_role_based_on_permissions()
+            
         super().save(*args, **kwargs)
+
+    def update_role_based_on_permissions(self):
+        if self.is_superuser:
+            self.role = self.UserRoles.ADMIN
+            self.is_staff = True
+        elif self.is_staff:
+            self.role = self.UserRoles.MODERATOR
+        else:
+            self.role = self.UserRoles.COMMON
 
      
 class EmailVerificationCode(models.Model):

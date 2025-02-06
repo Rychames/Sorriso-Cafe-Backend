@@ -7,12 +7,14 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from utils.model_viewset import ModelViewSet
 from utils.responses import Response, StrResponse
-from utils.permissions import IsAuthenticated
+from utils.permissions import IsAuthenticated, IsModerator, IsNotCommon
 from user.email import create_verification_code, send_verification_email
 from user.serializers import (
     LoginUserSerializer, 
-    RegisterUserSerializer, 
+    RegisterUserSerializer,
+    UserManagerSerializer, 
     VerifyCodeSerializer, 
     UserSerializer
 )   
@@ -223,6 +225,13 @@ class UserLoginViewSet(viewsets.ViewSet):
                 message=f"Não foi possível renovar seu login.",
                 status=400,
             )          
+
+class UserManagerViewSet(ModelViewSet):
+    permission_classes = [AllowAny]
+    serializer_class = UserManagerSerializer
+    queryset = CustomUser.objects.all()
+    http_method_names = ['get', 'put', 'patch']
+    
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]
