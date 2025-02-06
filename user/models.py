@@ -28,8 +28,8 @@ class CustomUser(AbstractUser):
     
     def save(self, *args, **kwargs):
         self.username = self.email   
-        if self.profile_image: 
-            self.profile_image = compress_image(self.profile_image)
+        #if self.profile_image: 
+        #    self.profile_image = compress_image(self.profile_image)
             
         self.update_role_based_on_permissions()
             
