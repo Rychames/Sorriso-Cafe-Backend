@@ -1,10 +1,24 @@
 # api/serializers.py
 
 from turtle import Turtle
+from django.db.models import DecimalField
 from rest_framework import serializers
 from api.models import Product, Company, ProductImage
 from user.serializers import UserSerializer
 
+class APISerializer(serializers.ModelSerializer):
+    """
+    Ajusta os campos Decimais para não se tornar String no Serializer
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)  
+        for field_name, field in self.fields.items():
+            if isinstance(self.Meta.model._meta.get_field(field_name), DecimalField):
+                self.fields[field_name] = serializers.DecimalField(
+                    max_digits=field.max_digits,
+                    decimal_places=field.decimal_places,
+                    coerce_to_string=False
+                )
 
 class CompanySerializer(serializers.ModelSerializer):
     products_count = serializers.IntegerField(read_only=True)  
@@ -13,13 +27,12 @@ class CompanySerializer(serializers.ModelSerializer):
         model = Company
         fields = '__all__'
  
-
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         exclude = ['product']
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(APISerializer):
     images = ProductImageSerializer(many=True, required=False)
     received_by = UserSerializer(read_only=True)
     received_company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
@@ -47,3 +60,4 @@ class ProductSerializer(serializers.ModelSerializer):
             ProductImage.objects.create(product=product, image=image_data)
             
         return product
+    
