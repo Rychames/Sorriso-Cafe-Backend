@@ -230,8 +230,7 @@ class UserManagerViewSet(ModelViewSet):
     permission_classes = [AllowAny]
     serializer_class = UserManagerSerializer
     queryset = CustomUser.objects.all()
-    http_method_names = ['get', 'put', 'patch']
-    
+    http_method_names = ['get', 'put', 'patch', 'delete']  
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]
