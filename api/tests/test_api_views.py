@@ -120,7 +120,7 @@ class ProductTests(AuthenticatedAPITestBase):
     def test_create_product(self):
         #print(self.product_data)
         response = self.client.post('/api/products/', self.product_data)
-        #print(response.content.decode())
+        print(response.content.decode())
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Product.objects.count(), 1)
         self.assertEqual(Product.objects.get().name, 'Mouse')

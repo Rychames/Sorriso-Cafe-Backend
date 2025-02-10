@@ -42,7 +42,8 @@ class ProductSerializer(APISerializer):
         model = Product
         fields = '__all__'
         extra_kwargs = {
-            'delivery_man_signature': {'required': False, 'allow_null': True}
+            'delivery_man_signature': {'required': False, 'allow_null': True},
+            'price': {'required': False, 'allow_null': True}
         }
     
     def to_representation(self, instance):

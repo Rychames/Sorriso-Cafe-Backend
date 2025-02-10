@@ -32,17 +32,24 @@ class LoginTestBase(UserDefaultValues, APITestCase):
         
         return super().setUp()
     
-    def login_complete(self):
-        self.user = self.create_simple_user()
+    def login(self):
         data = self.default_login_user_data_simple
         login_response = self.client.post(reverse('user:login-list'), data, format='json')
         self.access_token = login_response.data['data']['access']
         self.refresh_token = login_response.data['data']['refresh']
     
-    def create_simple_user(self):
+    def login_complete(self, role='COMMON'):
+        self.user = self.create_simple_user(role=role)
+        data = self.default_login_user_data_simple
+        login_response = self.client.post(reverse('user:login-list'), data, format='json')
+        self.access_token = login_response.data['data']['access']
+        self.refresh_token = login_response.data['data']['refresh']
+    
+    def create_simple_user(self, role='COMMON'):
         user = CustomUser.objects.create(
             email=self.email,
             password=make_password(self.password),
+            role=role
         )
         return user
     

@@ -24,6 +24,7 @@ class IsNotCommon(BasePermission):
                 message='Você precisa ter o nível de acesso de um ADMIN ou MODERATOR.',
                 error= ["Somente uma conta de nível ADMIN ou MODERATOR consegue acessar."]
                 )
+            print("usuário não tem permissão")
             raise PermissionDenied(detail=response)
         return True
     
@@ -49,3 +50,37 @@ class IsModerator(BasePermission):
             raise PermissionDenied(detail=response)
         return True
     
+class NotSelf(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.id == view.kwargs['pk']:
+            response = ResponseData(
+                status=401,
+                message='Você não pode realizar essa ação.',
+                error= ["Você não pode realizar essa ação."]
+                )
+            raise PermissionDenied(detail=response)
+        return True
+
+class SelfReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        # Obtém o ID do usuário autenticado
+        user_id = request.user.id
+        
+        if request.method not in ['GET', 'HEAD', 'OPTIONS']:
+            try:
+                request_id = int(view.kwargs.get('pk')) 
+            except (KeyError, ValueError):
+                #
+                return False
+
+            if user_id == request_id:
+                print('\nSelf ReadOnly: Acesso negado\n')
+                response_data = {
+                    'status': 401,
+                    'message': 'Você não pode realizar essa ação.',
+                    'error': ['Você não pode realizar essa ação.']
+                }
+                raise PermissionDenied(detail=response_data)
+
+        # Permite o acesso se todas as verificações passarem
+        return True

@@ -8,8 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from utils.model_viewset import ModelViewSet
-from utils.responses import Response, StrResponse
-from utils.permissions import IsAuthenticated, IsModerator, IsNotCommon
+from utils.responses import ApiResponse, Response, StrResponse
+from utils.permissions import IsAuthenticated, IsNotCommon, SelfReadOnly
 from user.email import create_verification_code, send_verification_email
 from user.serializers import (
     LoginUserSerializer, 
@@ -232,10 +232,11 @@ class UserLoginViewSet(viewsets.ViewSet):
             )          
 
 class UserManagerViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated, IsNotCommon]
+    permission_classes = [IsAuthenticated, SelfReadOnly, IsNotCommon]
     serializer_class = UserManagerSerializer
     queryset = CustomUser.objects.all()
     http_method_names = ['get', 'put', 'patch', 'delete']  
+    
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]

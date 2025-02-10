@@ -31,19 +31,19 @@ class CustomUser(AbstractUser):
         #if self.profile_image: 
         #    self.profile_image = compress_image(self.profile_image)
             
-        self.update_role_based_on_permissions()
+        self.update_role_based_on_roles()
             
         super().save(*args, **kwargs)
 
-    def update_role_based_on_permissions(self):
-        if self.is_superuser:
-            self.role = self.UserRoles.ADMIN
+    def update_role_based_on_roles(self):
+        if self.UserRoles.ADMIN:
+            self.is_superuser = True
             self.is_staff = True
-        elif self.is_staff:
-            self.role = self.UserRoles.MODERATOR
+        elif self.UserRoles.MODERATOR:
+            self.is_staff = True
         else:
-            self.role = self.UserRoles.COMMON
-
+            self.is_superuser = False
+            self.is_staff = False
      
 class EmailVerificationCode(models.Model):
     email = models.EmailField(unique=True)

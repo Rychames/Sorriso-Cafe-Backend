@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
+from api.tests.test_api_views_base import AuthenticatedAPITestBase
 from user.models import CustomUser, EmailVerificationCode
 from user.tests.test_user_views_base import LoginTestBase, RegisterTestBase
 
@@ -317,4 +318,24 @@ class UserAPITest(LoginTestBase):
         # Verifica se o usuário foi realmente deletado
         with self.assertRaises(CustomUser.DoesNotExist):
             self.user.refresh_from_db()
-                
+          
+class UserManagerTest(AuthenticatedAPITestBase):
+    def setUp(self):
+        super().setUp()    
+        self.user.role = 'MODERATOR'
+        self.user.save()
+        print('User', self.user.role)
+        self.login()
+        self.load_credentials()
+       
+        
+    def test_user_manager_list_users(self):
+        """
+        Testa a listagem de usuários.
+        """
+        
+        response = self.client.get(
+            '/user/manager/',
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['data'])    

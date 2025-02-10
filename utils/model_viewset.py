@@ -20,13 +20,16 @@ class ModelViewSet(viewsets.ModelViewSet):
         #return self.finalize_response(request, response)
 
     def update(self, request, *args, **kwargs):
+        #request.data.pop('role', None)
+
         response = super().update(request, *args, **kwargs)
+        
         return ApiResponse(response)
         #return self.finalize_response(request, response)
 
-    def partial_update(self, request, *args, **kwargs):
-        response = super().partial_update(request, *args, **kwargs)
-        return ApiResponse(response)
+    #def partial_update(self, request, *args, **kwargs):
+        #response = super().partial_update(request, *args, **kwargs)
+        #return ApiResponse(response)
         #return self.finalize_response(request, response)
 
     def destroy(self, request, *args, **kwargs):
