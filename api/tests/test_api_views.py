@@ -89,6 +89,7 @@ class ProductTests(AuthenticatedAPITestBase):
             'description': '12.000 de DPI',
             'quantity': 2,
             'size': 'S',
+            'price': 100.00,
             'lot': False,
             'sector': 'Informática',
             'delivered_by': 'Mercado Livre',
@@ -115,7 +116,13 @@ class ProductTests(AuthenticatedAPITestBase):
             obj.delete()
         for obj in Product.objects.all():
             obj.delete()
-        
+    
+    def test_create_product_without_price(self):
+        data = self.product_data.copy()
+        data.pop('price')
+        response = self.client.post('/api/products/', data)
+        print(response.content.decode())
+        self.assertEqual(response.status_code, 201)
 
     def test_create_product(self):
         #print(self.product_data)
@@ -160,7 +167,7 @@ class ProductTests(AuthenticatedAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Product.objects.get().quantity, 20)
 
-    def test_delete_product(self):
+    def test_delete_product(self): #não deleta imagens
         self.test_create_product()
         product = Product.objects.first()
         
@@ -168,7 +175,7 @@ class ProductTests(AuthenticatedAPITestBase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Product.objects.count(), 0)
         
-    def test_retrieve_product_images(self):
+    def test_retrieve_product_images(self):  
         self.test_create_product()
         product = Product.objects.first()
         response = self.client.get(f'/api/products/{product.id}/')

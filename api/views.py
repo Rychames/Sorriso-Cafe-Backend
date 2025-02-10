@@ -2,6 +2,7 @@ from rest_framework import permissions
 from api.filters import ProductFilter
 from api.models import Product, Company, ProductImage
 from api.serializers import ProductImageSerializer, ProductSerializer, CompanySerializer
+from user.models import CustomUser
 from utils.model_viewset import ModelViewSet
 from utils.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
@@ -27,6 +28,9 @@ class ProductViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(received_by=self.request.user)
+        
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
         
 class ProductImageViewSet(ModelViewSet):
     #permission_classes = [IsAuthenticated]

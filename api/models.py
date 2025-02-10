@@ -43,6 +43,10 @@ class ProductImage(models.Model):
         #if self.image:  # Comprime apenas se houver imagem
         #    self.image = compress_image(self.image)
         super().save(*args, **kwargs)
+        
+    def delete(self, *args, **kwargs):
+        self.image.delete(save=False)
+        super().delete(*args, **kwargs)
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -66,7 +70,7 @@ class Product(models.Model):
     description = models.TextField()
     quantity = models.PositiveSmallIntegerField()
     size = models.CharField(choices=SIZE_CHOICES, max_length=1, blank=True, null=True)
-    #price = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    price = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     lot = models.BooleanField(default=False)
     sector = models.CharField(max_length=255)
     
@@ -90,5 +94,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def delete(self, *args, **kwargs):
+        for product_image in self.images.all():
+            product_image.delete()  
+        super().delete(*args, **kwargs) 
     
    
