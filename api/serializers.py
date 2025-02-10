@@ -17,7 +17,9 @@ class APISerializer(serializers.ModelSerializer):
                 self.fields[field_name] = serializers.DecimalField(
                     max_digits=field.max_digits,
                     decimal_places=field.decimal_places,
-                    coerce_to_string=False
+                    coerce_to_string=False,
+                    required=field.required,          # ← Mantém required original
+                    allow_null=field.allow_null 
                 )
 
 class CompanySerializer(serializers.ModelSerializer):
