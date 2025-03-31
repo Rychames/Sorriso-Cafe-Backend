@@ -123,8 +123,8 @@ class PythonAnywhereAPI:
         
         print('\n')
         self.send_command(f"cd {project_directory}", f"Entrando no diretório do projeto: {project_directory}")
-        self.send_command("git stash", "Arquivando as alterações locais.")
-        self.send_command("git pull", "Atualizando os arquivos.")
+        self.send_command("git stash", "Arquivando as alterações locais...")
+        self.send_command("git pull", "Atualizando os arquivos...")
 
         time.sleep(5)
         self.reload_webapp("Recarregando o aplicativo web...")

@@ -1,6 +1,5 @@
 # api/serializers.py
 
-from turtle import Turtle
 from django.db.models import DecimalField
 from rest_framework import serializers
 from api.models import Product, Company, ProductImage
