@@ -16,4 +16,4 @@ ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=website.settings \
     PORT=8000
 
-CMD python manage.py runserver 0.0.0.0:$PORT
+CMD waitress-serve --port=$PORT --host=0.0.0.0 website.wsgi:application
