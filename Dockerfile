@@ -8,8 +8,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN SECRET_KEY="temporary-build-key" python manage.py collectstatic --noinput
-
+# Definir variáveis temporárias para o collectstatic
+RUN SECRET_KEY="temporary-build-key" \
+    EMAIL_HOST_USER="temp@example.com" \
+    EMAIL_HOST_PASSWORD="temp-password" \
+    python manage.py collectstatic --noinput
+    
 EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1 \
