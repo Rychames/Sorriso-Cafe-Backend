@@ -1,5 +1,13 @@
 FROM python:3.10-alpine
 
+RUN apk update && apk add --no-cache \
+    mariadb-connector-c \
+    mariadb-dev \
+    gcc \
+    musl-dev \
+    pkgconf \
+    && rm -rf /var/cache/apk/*
+
 WORKDIR /app
 
 COPY requirements.txt .
