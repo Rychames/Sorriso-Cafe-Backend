@@ -99,5 +99,9 @@ class Product(models.Model):
         for product_image in self.images.all():
             product_image.delete()  
         super().delete(*args, **kwargs) 
+        
+        
+# class Teste(models.Model):
+#     nome = models.CharField(max_length = 20)
     
    
